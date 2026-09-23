@@ -21,12 +21,31 @@ graph TB
             Shared["packages/shared<br/>Zod schemas, types,<br/>seed data"]
         end
     end
-    Web -->|imports| Shared
     Web -->|route handlers| API["In-Memory API<br/>/api/bills<br/>/api/approvals<br/>/api/reimbursements<br/>/api/cashflow"]
     Web -->|UI| ShadcnUI["shadcn/ui + Tailwind CSS<br/>+ Recharts + TanStack Table"]
+    Mobile["apps/mobile<br/>Expo React Native<br/>TypeScript strict"]
+    Mobile -->|imports| Shared
+    Mobile -->|API calls| API
+    Mobile -->|UI| NativeWind["NativeWind + Expo Router<br/>+ TanStack Query"]
 ```
 
-## Setup & Running
+## Running the Mobile App
+The SpendFlow mobile app is built with Expo and NativeWind to perfectly match the web design tokens.
+
+1. Ensure dependencies are installed from the root: `pnpm install`
+2. Run the Next.js web API server (so the mobile app can fetch data): `pnpm dev`
+3. In a new terminal, navigate to the mobile app and start Expo: `pnpm --filter mobile start`
+4. Scan the QR code with the Expo Go app on iOS/Android, or press `i`/`a` in the terminal to launch a simulator.
+
+> **Note:** For physical devices, ensure `EXPO_PUBLIC_API_URL` points to your local network IP (e.g., `http://192.168.1.100:3000`).
+
+### Capturing the Approval Swipe GIF
+1. Launch the mobile app in an iOS Simulator.
+2. Navigate to the **Approvals** tab (second tab).
+3. Start a screen recording (Cmd+Shift+5 on Mac).
+4. Swipe the top bill row to the **right** (green checkmark will appear).
+5. Watch the row animate out optimistically (and feel the haptic feedback on a real device).
+6. Save the recording as a GIF and place it in `docs/screenshots/mobile-approval.gif`.
 1. Clone the repository
 2. Install dependencies: `pnpm install`
 3. Run the development server: `pnpm dev`
