@@ -13,8 +13,8 @@ export async function GET() {
     );
   }
 
-  // Return pending bills for the current user (Priya Sharma)
-  const pendingBills = store.getPendingApprovals('Priya Sharma');
+  // Return pending bills for the current user (Sai Krishna S)
+  const pendingBills = store.getPendingApprovals('Sai Krishna S');
   return NextResponse.json({ data: pendingBills, total: pendingBills.length });
 }
 
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       id: `APR-${Date.now()}`,
       billId,
       approverId: 'usr-001',
-      approverName: 'Priya Sharma',
+      approverName: 'Sai Krishna S',
       action,
       reason,
       timestamp: new Date().toISOString(),

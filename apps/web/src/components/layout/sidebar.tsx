@@ -112,11 +112,11 @@ export function AppSidebar() {
           <ThemeToggle />
           <div className="flex items-center gap-3 px-1">
             <div className="bg-primary/10 text-primary flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold">
-              PS
+              SK
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">Priya Sharma</p>
-              <p className="text-muted-foreground truncate text-xs">Finance Lead</p>
+              <p className="truncate text-sm font-medium">Sai Krishna S</p>
+              <p className="text-muted-foreground truncate text-xs">sks@spendflow.in</p>
             </div>
           </div>
         </div>

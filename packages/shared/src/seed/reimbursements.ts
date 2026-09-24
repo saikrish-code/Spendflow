@@ -17,7 +17,7 @@ export const seedReimbursements: Reimbursement[] = [
     status: 'Paid',
     submittedAt: daysAgo(30),
     reviewedAt: daysAgo(27),
-    reviewerName: 'Priya Sharma',
+    reviewerName: 'Sai Krishna S',
   },
   {
     id: 'RMB-002',
@@ -144,7 +144,7 @@ export const seedReimbursements: Reimbursement[] = [
     status: 'Paid',
     submittedAt: daysAgo(20),
     reviewedAt: daysAgo(17),
-    reviewerName: 'Priya Sharma',
+    reviewerName: 'Sai Krishna S',
   },
   {
     id: 'RMB-012',

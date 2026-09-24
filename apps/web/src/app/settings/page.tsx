@@ -44,17 +44,17 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-6">
             <div className="bg-primary text-primary-foreground flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold">
-              PS
+              SK
             </div>
             <div className="flex-1 space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" defaultValue="Priya Sharma" />
+                  <Input id="name" defaultValue="Sai Krishna S" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" defaultValue="priya.sharma@spendflow.in" />
+                  <Input id="email" type="email" defaultValue="sks@spendflow.in" />
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -36,7 +36,7 @@ const statuses = [
 ] as const;
 
 const approvers = [
-  'Priya Sharma',
+  'Sai Krishna S',
   'Rajesh Iyer',
   'Ananya Gupta',
   'Vikram Patel',
