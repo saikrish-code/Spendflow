@@ -1,5 +1,4 @@
 import { processChat } from '@/lib/ai/provider';
-import { CoreMessage } from 'ai';
 
 export const maxDuration = 60;
 

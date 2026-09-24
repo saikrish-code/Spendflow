@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const approvals = seedBills.filter((b) => b.status === 'Pending Approval');
   const count = approvals.length;
 
-  const blocks = [
+  const blocks: any[] = [
     {
       type: "header",
       text: {

@@ -8,20 +8,43 @@ import { parseCitations } from './citation';
 import { Send, Bot, User, RefreshCw, Square, X, MessageCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+function getMessageText(m: any): string {
+  if (typeof m.content === 'string' && m.content) {
+    return m.content;
+  }
+  if (m.parts && Array.isArray(m.parts)) {
+    return m.parts
+      .filter((p: any) => p.type === 'text')
+      .map((p: any) => p.text)
+      .join('');
+  }
+  if (m.text && typeof m.text === 'string') {
+    return m.text;
+  }
+  return '';
+}
+
 export function CopilotWidget() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const { messages, append, stop, regenerate, isLoading, error } = useChat({
-    api: '/api/chat',
-  });
+  const { messages, sendMessage, stop, regenerate, status, error } = useChat() as any;
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
-  
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const handleSend = (text: string) => {
+    if (!text.trim()) return;
+    if (typeof sendMessage === 'function') {
+      sendMessage({ text });
+    }
+  };
+
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim()) return;
-    append({ role: 'user', content: input });
+    handleSend(input);
     setInput('');
   };
 
@@ -58,27 +81,30 @@ export function CopilotWidget() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4" ref={scrollRef}>
-            {messages.length === 0 && (
+            {(!messages || messages.length === 0) && (
               <div className="flex-1 flex flex-col items-center justify-center opacity-50">
                 <Bot className="w-12 h-12 mb-4" />
                 <p className="text-center text-sm">Ask me anything about your finances.</p>
               </div>
             )}
 
-            {messages.map((m) => (
-              <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex gap-2 max-w-[85%] ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${m.role === 'user' ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
-                    {m.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                  </div>
-                  <div className={`p-3 text-sm rounded-xl ${m.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : 'bg-muted/50 rounded-tl-sm border'}`}>
-                    {m.role === 'assistant' ? parseCitations(m.content, onCitationClick) : m.content}
+            {messages && messages.map((m: any, idx: number) => {
+              const text = getMessageText(m);
+              return (
+                <div key={m.id || idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`flex gap-2 max-w-[85%] ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${m.role === 'user' ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                      {m.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                    </div>
+                    <div className={`p-3 text-sm rounded-xl ${m.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : 'bg-muted/50 rounded-tl-sm border'}`}>
+                      {m.role === 'assistant' ? parseCitations(text, onCitationClick) : text}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
-            {isLoading && messages[messages.length - 1]?.role === 'user' && (
+            {isLoading && messages && messages[messages.length - 1]?.role === 'user' && (
               <div className="flex justify-start">
                 <div className="flex gap-2 max-w-[85%] flex-row">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-muted text-muted-foreground">
@@ -94,16 +120,16 @@ export function CopilotWidget() {
             {error && (
               <div className="text-destructive text-center text-sm p-4 border border-destructive/20 bg-destructive/10 rounded-md flex items-center justify-between">
                 <span>Failed to fetch response.</span>
-                <Button variant="ghost" size="sm" onClick={() => regenerate()}><RefreshCw className="w-4 h-4 mr-2" /> Retry</Button>
+                <Button variant="ghost" size="sm" onClick={() => regenerate?.()}><RefreshCw className="w-4 h-4 mr-2" /> Retry</Button>
               </div>
             )}
           </div>
 
           <div className="p-4 border-t bg-background">
-            {messages.length === 0 && (
+            {(!messages || messages.length === 0) && (
               <div className="mb-4 flex flex-wrap gap-2">
                 {suggestions.map((s, i) => (
-                  <Button key={i} variant="outline" size="sm" onClick={() => append({ role: 'user', content: s })} className="text-xs text-left h-auto py-2">
+                  <Button key={i} variant="outline" size="sm" onClick={() => handleSend(s)} className="text-xs text-left h-auto py-2">
                     {s}
                   </Button>
                 ))}
@@ -118,7 +144,7 @@ export function CopilotWidget() {
                 disabled={isLoading}
               />
               {isLoading ? (
-                <Button type="button" variant="destructive" size="icon" onClick={() => stop()}>
+                <Button type="button" variant="destructive" size="icon" onClick={() => stop?.()}>
                   <Square className="w-4 h-4 fill-current" />
                 </Button>
               ) : (
