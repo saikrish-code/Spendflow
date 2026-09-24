@@ -16,9 +16,21 @@ interface BillsResponse {
   pageSize: number;
 }
 
-export default function BillsPage() {
+import { useSearchParams, useRouter } from 'next/navigation';
+
+function BillsContent() {
   const [selectedBill, setSelectedBill] = React.useState<Bill | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const billIdParam = searchParams.get('billId');
   const bills = useFetch<BillsResponse>('/api/bills?pageSize=100');
+
+  React.useEffect(() => {
+    if (billIdParam && bills.data?.data) {
+      const bill = bills.data.data.find(b => b.id === billIdParam);
+      if (bill) setSelectedBill(bill);
+    }
+  }, [billIdParam, bills.data?.data]);
 
   if (bills.error) {
     return (
@@ -73,9 +85,27 @@ export default function BillsPage() {
         bill={selectedBill}
         open={!!selectedBill}
         onOpenChange={(open) => {
-          if (!open) setSelectedBill(null);
+          if (!open) {
+            setSelectedBill(null);
+            if (billIdParam) router.push('/bills');
+          }
         }}
       />
     </>
+  );
+}
+
+export default function BillsPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-9 w-64" />
+          <Skeleton className="h-9 w-32" />
+        </div>
+      </div>
+    }>
+      <BillsContent />
+    </React.Suspense>
   );
 }

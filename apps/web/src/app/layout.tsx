@@ -5,6 +5,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ToastProvider } from '@/components/ui/toast';
 import { AppSidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
+import { CommandBar } from '@/components/layout/command-bar';
+import { CopilotWidget } from '@/components/copilot/copilot-widget';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -42,6 +44,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="h-16 md:hidden" />
               </div>
             </div>
+            <CommandBar />
+            <CopilotWidget />
           </ToastProvider>
         </ThemeProvider>
       </body>

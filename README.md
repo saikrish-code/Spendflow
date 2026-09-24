@@ -56,3 +56,10 @@ The SpendFlow mobile app is built with Expo and NativeWind to perfectly match th
 - **Component System**: shadcn/ui ensures accessible, robust components without being tied to a heavy NPM package.
 - **Theme/Tokens**: Tailwind v4 with an inline `@theme` in `globals.css` using an 8-pt scale and strict OKLCH palettes for a premium feel.
 - **State/API**: Next.js Route Handlers coupled with an in-memory Singleton store simulate realistic API behaviors (latency, errors) before a real backend is implemented.
+
+## How the copilot avoids hallucination
+The SpendFlow AI Copilot is built using a strict tool-calling (Agentic RAG) architecture to prevent data hallucination:
+1. **Tool-Driven Responses**: The LLM is restricted from inventing financial data. It can only answer questions by executing predefined tools (`listBills`, `getApprovals`, `getCashflow`, `sumByCategory`) which query the exact same data source as the UI.
+2. **Deterministic Fallbacks**: If the tools return no evidence, the system prompt strictly instructs the copilot to state that it cannot answer, rather than guessing.
+3. **Zod Validation**: All inputs and outputs to the AI tools are validated using strict Zod schemas from `packages/shared`, preventing malformed queries.
+4. **Verifiable Citations**: Every financial figure is accompanied by a citation chip (e.g., `[BILL-1234]`). Users can click these chips to open the exact source record in the UI, ensuring 100% verifiability and trust.
